@@ -4,6 +4,8 @@
 # Tom Yarrish
 # Version 2.0
 #
+# To run, simply type: mbr_parse.py <file to parse>
+#
 # To do:
 # - Only bring in first 512 bytes in case it's run against an image
 # - Handle extended partitions
