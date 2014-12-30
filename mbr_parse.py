@@ -13,7 +13,6 @@
 import sys
 import struct
 import binascii
-from binascii import hexlify
 
 # This is a dictionary listing to identify the partition type
 
