@@ -13,18 +13,19 @@
 import sys
 import struct
 import binascii
+from binascii import hexlify
 
 # This is a dictionary listing to identify the partition type
 
 def check_partition_type(file_type_hex):
     file_system = { '0x0' : "Empty", '0x1' : "FAT12", '0x2' : "XENIX root", '0x3' : "XENIX usr",
                       '0x4' : "FAT16", '0x5' : "Extended", '0x6' : "FAT16B", '0x7' : "NTFS", '0x8' : "AIX" ,
-                      '0x9' : "AIX Bootable" , '0xA' : "OS/2 Boot" , '0xB' : "Win95 FAT32" , '0xC' : "Win95 FAT32" ,
-                      '0xD' : "Reserved" , '0xE' : "Win95 FAT16" , '0xF' : "Win95 Ext" , '0x10' : "OPUS" ,
+                      '0x9' : "AIX Bootable" , '0xa' : "OS/2 Boot" , '0xb' : "Win95 FAT32" , '0xc' : "Win95 FAT32" ,
+                      '0xd' : "Reserved" , '0xe' : "Win95 FAT16" , '0xf' : "Win95 Ext" , '0x10' : "OPUS" ,
                       '0x11' : "FAT12 Hidden" , '0x12' : "Compaq Diag" , '0x13' : "N/A" , '0x14' : "FAT16 Hidden" ,
                       '0x15' : "Extended Hidden" , '0x16' : "FAT16 Hidden" , '0x17' : "NTFS Hidden" , '0x18' : "AST" ,
-                      '0x19' : "Willowtech" , '0x1A' : "N/A" , '0x1B' : "Hidden FAT32" , '0x1C' : "Hidden FAT32X" ,
-                     '0x1D' : "N/A" , '0x1E' : "Hidden FAT16X" }
+                      '0x19' : "Willowtech" , '0x1a' : "N/A" , '0x1b' : "Hidden FAT32" , '0x1c' : "Hidden FAT32X" ,
+                     '0x1d' : "N/A" , '0x1e' : "Hidden FAT16X" }
     try:
         file_partition_type = file_system[file_type_hex]
     except:
@@ -70,11 +71,12 @@ mbr_file = sys.argv[1]
 
 
 with open(mbr_file, "rb") as f:
-    mbr_data = f.read()
+    mbr_data = f.read(512)
     disk_sig = struct.unpack("<L", mbr_data[440:444])
     start = 446
     end = 462
-
+    print "\nDisk Signature is {}\n".format(hex(disk_sig[0]))
+    
 # This section reads in each 16 bytes of data from the MBR partition section and interprets the data
 
     num_partitions = 0
@@ -87,7 +89,6 @@ with open(mbr_file, "rb") as f:
             print "Partition {} is not a valid....skipping".format(num_partitions)
         else:
             print "Here is the information for partition {}:\n ".format(num_partitions)
-            print "Disk Signature is {}\n".format(hex(disk_sig[0]))
             if (format_partition[0]) == "0x80":                   # Is it bootable or no?
                 print "Partition is bootable"
             else:
